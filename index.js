@@ -65,20 +65,22 @@ function prevent(){
 
   function restoreAction() {
     try {
-      currentContainer?.removeEventListener("mousedown", preventActionFn, true);
-      currentContainer?.removeEventListener("mouseup", preventActionFn, true);
-      currentContainer?.removeEventListener("select", preventActionFn, true);
-      currentContainer?.removeEventListener("touchstart", preventActionFn, true);
-      currentContainer?.removeEventListener("touchend", preventActionFn, true);
-      currentContainer?.removeEventListener("click", preventActionFn, true);
-      currentContainer?.removeEventListener("dblclick", preventActionFn, true);
-      currentContainer?.removeEventListener("drag", preventActionFn, true);
-      currentContainer?.removeEventListener("drop", preventActionFn, true);
-      currentContainer?.removeEventListener("keydown", preventActionFn, true);
-      currentContainer?.removeEventListener("keypress", preventActionFn, true);
-      currentContainer?.removeEventListener("keyup", preventActionFn, true);
+      if (currentContainer) {
+        currentContainer.removeEventListener("mousedown", preventActionFn, true);
+        currentContainer.removeEventListener("mouseup", preventActionFn, true);
+        currentContainer.removeEventListener("select", preventActionFn, true);
+        currentContainer.removeEventListener("touchstart", preventActionFn, true);
+        currentContainer.removeEventListener("touchend", preventActionFn, true);
+        currentContainer.removeEventListener("click", preventActionFn, true);
+        currentContainer.removeEventListener("dblclick", preventActionFn, true);
+        currentContainer.removeEventListener("drag", preventActionFn, true);
+        currentContainer.removeEventListener("drop", preventActionFn, true);
+        currentContainer.removeEventListener("keydown", preventActionFn, true);
+        currentContainer.removeEventListener("keypress", preventActionFn, true);
+        currentContainer.removeEventListener("keyup", preventActionFn, true);
+      }
 
-      if (clickableElements?.length) {
+      if (clickableElements && clickableElements.length) {
         for (var i = 0; i < clickableElements.length; i++) {
           var el = clickableElements[i];
           var storedEl = elements.get(el);
@@ -86,14 +88,18 @@ function prevent(){
           if (storedEl) {
             if (storedEl.ogTabIndex === null) {
               el.removeAttribute("tabindex");
+            } else if(storedEl.ogTabIndex) {
+              el.setAttribute("tabindex", storedEl.ogTabIndex);
             } else {
-              el.setAttribute("tabindex", storedEl.ogTabIndex || "");
+              el.setAttribute("tabindex", "");
             }
 
             if (storedEl.ogDisabled === null) {
               el.removeAttribute("disabled");
+            } else if(storedEl.ogDisabled) {
+              el.setAttribute("disabled", storedEl.ogDisabled);
             } else {
-              el.setAttribute("disabled", storedEl.ogDisabled || "");
+              el.setAttribute("disabled", "");
             }
 
             el.style.pointerEvents = storedEl.ogPointerEvents;

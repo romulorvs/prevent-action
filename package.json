@@ -1,6 +1,6 @@
 {
   "name": "prevent-action",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Prevent any action (click, focus, touch, typing, keydown, etc.) on the children of an element.",
   "main": "index.js",
   "scripts": {
@@ -11,12 +11,16 @@
     "url": "git+https://github.com/romulorvs/prevent-action.git"
   },
   "keywords": [
+    "prevent click",
     "prevent action",
     "prevent actions",
+    "block click",
     "block action",
     "block actions",
+    "avoid click",
     "avoid action",
     "avoid actions",
+    "forbid click",
     "forbid action",
     "forbid actions"
   ],
