@@ -1,9 +1,10 @@
-function prevent(){
+function prevent() {
   var focusedElement;
   var focusedElementOnBlur;
   var currentContainer;
   var clickableElements;
   var elements = new Map();
+  var events = [ "mousedown", "mouseup", "select", "touchstart", "touchend", "click", "dblclick", "drag", "drop", "keydown", "keypress", "keyup" ];
 
   function preventActionFn(e) {
     e.preventDefault();
@@ -13,6 +14,7 @@ function prevent(){
   function preventAction(container = document.body) {
     restoreAction();
 
+    if (!container) return;
     if (typeof container === "string") {
       var element = document.querySelector(container);
       if (!element) return;
@@ -24,7 +26,7 @@ function prevent(){
     var activeElement = document.activeElement;
 
     clickableElements = currentContainer.querySelectorAll(
-      'input, textarea, button, select, a, details, area, frame, iframe, [contentEditable=""], [contentEditable="true"], [contentEditable="TRUE"], [tabindex]:not([tabindex^="-"])'
+      "input, textarea, button, select, a, details, area, frame, iframe, [contentEditable], [tabindex]"
     );
 
     for (var i = 0; i < clickableElements.length; i++) {
@@ -36,48 +38,28 @@ function prevent(){
         focusedElementOnBlur = document.activeElement;
       }
 
-      var ogTabIndex = el.getAttribute("tabindex");
-      var ogDisabled = el.getAttribute("disabled");
-      var ogPointerEvents = el.style.pointerEvents;
       elements.set(el, {
-        ogTabIndex: ogTabIndex,
-        ogDisabled: ogDisabled,
-        ogPointerEvents: ogPointerEvents
+        ogTabIndex: el.getAttribute("tabindex"),
+        ogDisabled: el.getAttribute("disabled"),
+        ogStyle: el.getAttribute("style"),
       });
+
       el.setAttribute("tabindex", "-1");
       el.setAttribute("disabled", "disabled");
       el.style.pointerEvents = "none";
     }
 
-    currentContainer.addEventListener("mousedown", preventActionFn, true);
-    currentContainer.addEventListener("mouseup", preventActionFn, true);
-    currentContainer.addEventListener("select", preventActionFn, true);
-    currentContainer.addEventListener("touchstart", preventActionFn, true);
-    currentContainer.addEventListener("touchend", preventActionFn, true);
-    currentContainer.addEventListener("click", preventActionFn, true);
-    currentContainer.addEventListener("dblclick", preventActionFn, true);
-    currentContainer.addEventListener("drag", preventActionFn, true);
-    currentContainer.addEventListener("drop", preventActionFn, true);
-    currentContainer.addEventListener("keydown", preventActionFn, true);
-    currentContainer.addEventListener("keypress", preventActionFn, true);
-    currentContainer.addEventListener("keyup", preventActionFn, true);
-  };
+    for (let i = 0; i < events.length; i++) {
+      currentContainer.addEventListener(events[i], preventActionFn, true);
+    }
+  }
 
   function restoreAction() {
     try {
       if (currentContainer) {
-        currentContainer.removeEventListener("mousedown", preventActionFn, true);
-        currentContainer.removeEventListener("mouseup", preventActionFn, true);
-        currentContainer.removeEventListener("select", preventActionFn, true);
-        currentContainer.removeEventListener("touchstart", preventActionFn, true);
-        currentContainer.removeEventListener("touchend", preventActionFn, true);
-        currentContainer.removeEventListener("click", preventActionFn, true);
-        currentContainer.removeEventListener("dblclick", preventActionFn, true);
-        currentContainer.removeEventListener("drag", preventActionFn, true);
-        currentContainer.removeEventListener("drop", preventActionFn, true);
-        currentContainer.removeEventListener("keydown", preventActionFn, true);
-        currentContainer.removeEventListener("keypress", preventActionFn, true);
-        currentContainer.removeEventListener("keyup", preventActionFn, true);
+        for (let i = 0; i < events.length; i++) {
+          currentContainer.removeEventListener(events[i], preventActionFn, true);
+        }
       }
 
       if (clickableElements && clickableElements.length) {
@@ -85,24 +67,22 @@ function prevent(){
           var el = clickableElements[i];
           var storedEl = elements.get(el);
 
-          if (storedEl) {
-            if (storedEl.ogTabIndex === null) {
-              el.removeAttribute("tabindex");
-            } else if(storedEl.ogTabIndex) {
-              el.setAttribute("tabindex", storedEl.ogTabIndex);
-            } else {
-              el.setAttribute("tabindex", "");
-            }
+          if (storedEl.ogTabIndex === null) {
+            el.removeAttribute("tabindex");
+          } else {
+            el.setAttribute("tabindex", storedEl.ogTabIndex);
+          }
 
-            if (storedEl.ogDisabled === null) {
-              el.removeAttribute("disabled");
-            } else if(storedEl.ogDisabled) {
-              el.setAttribute("disabled", storedEl.ogDisabled);
-            } else {
-              el.setAttribute("disabled", "");
-            }
+          if (storedEl.ogDisabled === null) {
+            el.removeAttribute("disabled");
+          } else {
+            el.setAttribute("disabled", storedEl.ogDisabled);
+          }
 
-            el.style.pointerEvents = storedEl.ogPointerEvents;
+          if (storedEl.ogStyle === null) {
+            el.removeAttribute("style");
+          } else {
+            el.setAttribute("style", storedEl.ogStyle);
           }
         }
 
@@ -110,22 +90,18 @@ function prevent(){
           focusedElement.focus();
         }
       }
-
+    } catch (error) {
+      if (!(error instanceof DOMException)) {
+        throw error;
+      }
+    } finally {
       focusedElement = null;
       focusedElementOnBlur = null;
       clickableElements = undefined;
-    } catch (error) {
-      if (error instanceof DOMException) {
-        focusedElement = null;
-        focusedElementOnBlur = null;
-        clickableElements = undefined;
-      } else {
-        throw error;
-      }
     }
-  };
+  }
 
-  return [ preventAction, restoreAction];
-};
+  return [preventAction, restoreAction];
+}
 
 module.exports = prevent;

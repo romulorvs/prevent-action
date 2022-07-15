@@ -380,11 +380,17 @@ describe("Prevent Action", () => {
     preventAction("#internal-div");
     internalDiv.removeChild(internalButton);
     restoreAction();
-    expect(document.body.innerHTML).toBe('<div id="internal-div"><button style=""></button></div><button></button>')
+    expect(document.body.innerHTML).toBe('<div id="internal-div"><button></button></div><button></button>')
   });
 
   test("should return undefined if the string selected element is not found", () => {
     const [ preventAction ] = prevent();
     expect(typeof preventAction('xxx')).toBe("undefined");
+  });
+
+  test("should return undefined if preventAction is called with null or empty string", () => {
+    const [ preventAction ] = prevent();
+    expect(typeof preventAction('')).toBe("undefined");
+    expect(typeof preventAction(null)).toBe("undefined");
   });
 });
