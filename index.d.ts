@@ -1,0 +1,1 @@
+export default function prevent(): [(container?: HTMLElement | Element | string | null) => void, () => void]

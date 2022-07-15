@@ -1,0 +1,33 @@
+{
+  "name": "prevent-action",
+  "version": "0.1.0",
+  "description": "Prevent any action (click, focus, touch, typing, keydown, etc.) on the children of an element.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --collectCoverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/romulorvs/prevent-action.git"
+  },
+  "keywords": [
+    "prevent action",
+    "prevent actions",
+    "block action",
+    "block actions",
+    "avoid action",
+    "avoid actions",
+    "forbid action",
+    "forbid actions"
+  ],
+  "author": "RomuloVS",
+  "license": "MIT License",
+  "bugs": {
+    "url": "https://github.com/romulorvs/prevent-action"
+  },
+  "homepage": "https://github.com/romulorvs/prevent-action",
+  "devDependencies": {
+    "jest": "^28.1.2",
+    "jest-environment-jsdom": "^28.1.3"
+  }
+}
