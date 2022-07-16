@@ -4,7 +4,7 @@ function prevent() {
   var currentContainer;
   var clickableElements;
   var elements = new Map();
-  var events = [ "mousedown", "mouseup", "select", "touchstart", "touchend", "click", "dblclick", "drag", "drop", "keydown", "keypress", "keyup" ];
+  var events = [ "mousedown", "mouseup", "mousemove", "touchstart", "touchend", "touchmove", "click", "dblclick", "contextmenu", "drag", "dragend", "dragstart", "drop", "scroll", "keydown", "keypress", "keyup" ];
 
   function preventActionFn(e) {
     e.preventDefault();
