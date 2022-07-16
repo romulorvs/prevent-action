@@ -42,11 +42,3 @@ preventAction(); // on document.body
 // ... do something while action is not allowed
 restoreAction();
 ```
-
-## Installation
-1. Install it using npm or yarn:
-    - ``npm i prevent-action``
-    - ``yarn add prevent-action``
-2. Import it:
-    - ``import prevent from "prevent-action"``
-3. Use it 😄.
