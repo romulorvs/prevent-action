@@ -4,7 +4,7 @@ function prevent() {
   var currentContainer;
   var clickableElements;
   var elements = new Map();
-  var events = [ "mousedown", "mouseup", "mousemove", "touchstart", "touchend", "touchmove", "click", "dblclick", "contextmenu", "drag", "dragend", "dragstart", "drop", "scroll", "keydown", "keypress", "keyup" ];
+  var events = ["mousedown", "mouseup", "mousemove", "touchstart", "touchend", "touchmove", "click", "dblclick", "contextmenu", "drag", "dragend", "dragstart", "drop", "scroll", "keydown", "keypress", "keyup"];
 
   function preventActionFn(e) {
     e.preventDefault();
@@ -49,16 +49,22 @@ function prevent() {
       el.style.pointerEvents = "none";
     }
 
-    for (let i = 0; i < events.length; i++) {
-      currentContainer.addEventListener(events[i], preventActionFn, true);
+    for (var j = 0; j < currentContainer.children.length; j++) {
+      var element = currentContainer.children[j];
+      for (var i = 0; i < events.length; i++) {
+        element.addEventListener(events[i], preventActionFn, true);
+      }
     }
   }
 
   function restoreAction() {
     try {
       if (currentContainer) {
-        for (let i = 0; i < events.length; i++) {
-          currentContainer.removeEventListener(events[i], preventActionFn, true);
+        for (var j = 0; j < currentContainer.children.length; j++) {
+          var element = currentContainer.children[j];
+          for (var i = 0; i < events.length; i++) {
+            element.removeEventListener(events[i], preventActionFn, true);
+          }
         }
       }
 

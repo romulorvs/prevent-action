@@ -15,7 +15,7 @@ describe("Prevent Action", () => {
     button.onclick = () => value++;
     document.body.appendChild(button);
 
-    const [ preventAction, restoreAction ] = prevent();
+    const [preventAction, restoreAction] = prevent();
 
     preventAction();
     expect(button.tabIndex).toEqual(-1);
@@ -71,7 +71,7 @@ describe("Prevent Action", () => {
     externalButton.onclick = () => externalValue++;
     document.body.appendChild(externalButton);
 
-    const [ preventAction, restoreAction ] = prevent();
+    const [preventAction, restoreAction] = prevent();
 
     preventAction("#internal-div");
     expect(internalButton.tabIndex).toEqual(-1);
@@ -116,7 +116,7 @@ describe("Prevent Action", () => {
     externalButton.onclick = () => externalValue++;
     document.body.appendChild(externalButton);
 
-    const [ preventAction, restoreAction ] = prevent();
+    const [preventAction, restoreAction] = prevent();
 
     const divElem = document.body.querySelector("div");
     preventAction(divElem);
@@ -163,8 +163,8 @@ describe("Prevent Action", () => {
     externalButton.onclick = () => externalValue++;
     document.body.appendChild(externalButton);
 
-    const [ preventActionInner, restoreActionInner ] = prevent();
-    const [ preventActionOuter, restoreActionOuter ] = prevent();
+    const [preventActionInner, restoreActionInner] = prevent();
+    const [preventActionOuter, restoreActionOuter] = prevent();
 
     preventActionInner("#internal-div");
     preventActionOuter();
@@ -340,7 +340,7 @@ describe("Prevent Action", () => {
     const externalButton = document.createElement("button");
     document.body.appendChild(externalButton);
 
-    const [ preventAction, restoreAction ] = prevent();
+    const [preventAction, restoreAction] = prevent();
     internalButton.focus();
     expect(document.activeElement).toBe(internalButton);
     preventAction("#internal-div");
@@ -366,31 +366,55 @@ describe("Prevent Action", () => {
     const externalButton = document.createElement("button");
     document.body.appendChild(externalButton);
 
-    const [ preventAction, restoreAction ] = prevent();
+    const [preventAction, restoreAction] = prevent();
     preventAction("#internal-div");
     internalDiv.innerHTML = "";
     restoreAction();
     expect(document.body.innerHTML).toBe('<div id="internal-div"></div><button></button>');
-    
+
     internalDiv.appendChild(internalButton);
     internalDiv.appendChild(document.createElement("button"));
     document.body.appendChild(internalDiv);
     document.body.appendChild(externalButton);
-    
+
     preventAction("#internal-div");
     internalDiv.removeChild(internalButton);
     restoreAction();
-    expect(document.body.innerHTML).toBe('<div id="internal-div"><button></button></div><button></button>')
+    expect(document.body.innerHTML).toBe('<div id="internal-div"><button></button></div><button></button>');
   });
 
   test("should return undefined if the string selected element is not found", () => {
-    const [ preventAction ] = prevent();
-    expect(typeof preventAction('xxx')).toBe("undefined");
+    const [preventAction] = prevent();
+    expect(typeof preventAction("xxx")).toBe("undefined");
   });
 
   test("should return undefined if preventAction is called with null or empty string", () => {
-    const [ preventAction ] = prevent();
-    expect(typeof preventAction('')).toBe("undefined");
+    const [preventAction] = prevent();
+    expect(typeof preventAction("")).toBe("undefined");
     expect(typeof preventAction(null)).toBe("undefined");
+  });
+
+  test("should keep events on the container", () => {
+    const internalDiv = document.createElement("div");
+    internalDiv.id = "internal-div";
+
+    const internalButton = document.createElement("button");
+    internalDiv.appendChild(internalButton);
+    document.body.appendChild(internalDiv);
+
+    const [preventAction] = prevent();
+
+    let value = 0;
+    internalDiv.onclick = () => value++;
+
+    internalDiv.click();
+    internalDiv.click();
+    expect(value).toBe(2);
+
+    preventAction("#internal-div");
+
+    internalDiv.click();
+    internalDiv.click();
+    expect(value).toBe(4);
   });
 });
